@@ -129,7 +129,16 @@ bucket_t *hash_table_bucket_insert(hash_table_t *hash_table, char *value)
     hash_table->buckets[key]->exists = true;
     hash_table->buckets[key]->existed = true;
     hash_table->buckets[key]->key_value.jumps = jumps;
-    hash_table->buckets[key]->key_value.value = value;
+    hash_table->buckets[key]->key_value.value = malloc(strlen(value) + 1);
+    if (hash_table->buckets[key]->key_value.value == NULL)
+    {
+        printf("Cannot allocate memory for value");
+        exit(EXIT_FAILURE);
+    }
+
+
+
+    memcpy(hash_table->buckets[key]->key_value.value, value, strlen(value) + 1);
     hash_table->buckets[key]->key_value.key = key;
     hash_table->buckets[key]->key_value.count++;
 
@@ -232,8 +241,10 @@ void hash_table_destroy(hash_table_t *self)
 {
     for (size_t i = 0; i != self->size; i++)
     {
-        free(self->buckets[i]);
+        bucket_destroy(self->buckets[i]);
     }
+
+
 
     free(self->buckets);
     free(self);

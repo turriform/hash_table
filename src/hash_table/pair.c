@@ -17,11 +17,15 @@ size_t hash_polinomial(size_t table_size, char *value)
     return res % table_size;
 }
 
-
-
 void bucket_destroy(bucket_t *self)
 {
-    free(self);
+    if (self != NULL)
+    {
+        if (self->key_value.value!=NULL){
+            free(self->key_value.value);
+        }
+        free(self);
+    }
 }
 
 void bucket_update_on_delete(bucket_t *self)
@@ -68,7 +72,7 @@ bucket_t *bucket_create(size_t key)
     bucket->key_value.jumps = 0;
     bucket->key_value.count = 0;
     bucket->key_value.key = key;
+    bucket->key_value.value = NULL;
 
     return bucket;
 }
-
